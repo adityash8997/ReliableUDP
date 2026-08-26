@@ -1,0 +1,2 @@
+timestamp,protocol,file_size_bytes,payload_size_bytes,window_size,loss_rate,duplication_rate,corruption_rate,reordering_rate,delay_ms,jitter_ms,seed,rto_ms,repetitions,completion_time_seconds,goodput_mbps,retransmissions,packets_sent,packets_received,duplicate_packets,corrupted_packets,timeout_count,integrity_pass,notes
+2026-08-26T14:04:09.316623+00:00,selective-repeat,1048576,1048576,16,0.02,0.0,0.0,0.0,0.0,0.0,456,500.0,3,1.2,5.9523809523809526,2,2050,2048,0,0,0,True,

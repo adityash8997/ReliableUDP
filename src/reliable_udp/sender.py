@@ -18,6 +18,8 @@ class SenderApplication:
     def __init__(self, config: TransferConfig):
         self.config = config
         self.protocol = build_protocol(config.protocol.protocol, config.protocol)
+        self.protocol.host = config.host
+        self.protocol.port = config.port
         self.transfer = FileTransferService(self.protocol)
 
     def send_file(self, file_path: str, output_path: str | None = None) -> dict:

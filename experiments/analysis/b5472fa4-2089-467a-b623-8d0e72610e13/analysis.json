@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-11-02T02:13:03.132080+00:00",
+  "analysis_source": "actual_only",
+  "inventory": {
+    "total_records": 2,
+    "actual_records": 2,
+    "successful_actual_runs": 2,
+    "failed_or_incomplete_actual_records": 0,
+    "synthetic_records_excluded": 0,
+    "legacy_unverified_records_excluded": 0,
+    "successful_protocols": ["stop-and-wait"]
+  },
+  "groups": {
+    "goodput_vs_loss_rate": [{
+      "protocol": "stop-and-wait",
+      "parameter": "loss_rate",
+      "parameter_value": 0.0,
+      "control_parameters": {"file_size_bytes": 256, "test_file": null, "payload_size_bytes": 128, "window_size": 1, "rto_ms": 100.0, "duplication_rate": 0.0, "corruption_rate": 0.0, "reordering_rate": 0.0, "delay_ms": 0.0, "jitter_ms": 0.0},
+      "records": 2,
+      "metrics": {"goodput_bps": {"run_count": 2, "mean": 822192.2670699939, "median": 822192.2670699939, "min": 697595.2039951055, "max": 946789.3301448823, "standard_deviation": 176206.8564323632, "raw_values": [946789.3301448823, 697595.2039951055]}}
+    }],
+    "goodput_vs_window_size": [{
+      "protocol": "stop-and-wait",
+      "parameter": "window_size",
+      "parameter_value": 1.0,
+      "control_parameters": {"file_size_bytes": 256, "test_file": null, "payload_size_bytes": 128, "rto_ms": 100.0, "loss_rate": 0.0, "duplication_rate": 0.0, "corruption_rate": 0.0, "reordering_rate": 0.0, "delay_ms": 0.0, "jitter_ms": 0.0},
+      "records": 2,
+      "metrics": {"goodput_bps": {"run_count": 2, "mean": 822192.2670699939, "median": 822192.2670699939, "min": 697595.2039951055, "max": 946789.3301448823, "standard_deviation": 176206.8564323632, "raw_values": [946789.3301448823, 697595.2039951055]}}
+    }],
+    "retransmissions_vs_reordering_probability": [],
+    "rto_sensitivity": [{
+      "protocol": "stop-and-wait",
+      "parameter": "rto_ms",
+      "parameter_value": 100.0,
+      "control_parameters": {"file_size_bytes": 256, "test_file": null, "payload_size_bytes": 128, "window_size": 1, "loss_rate": 0.0, "duplication_rate": 0.0, "corruption_rate": 0.0, "reordering_rate": 0.0, "delay_ms": 0.0, "jitter_ms": 0.0},
+      "records": 2,
+      "metrics": {
+        "transfer_duration_seconds": {"run_count": 2, "mean": 0.0025494500000604603, "median": 0.0025494500000604603, "min": 0.0021630999999615597, "max": 0.002935800000159361, "standard_deviation": 0.0005463814099627119, "raw_values": [0.0021630999999615597, 0.002935800000159361]},
+        "retransmissions": {"run_count": 2, "mean": 0.0, "median": 0.0, "min": 0.0, "max": 0.0, "standard_deviation": 0.0, "raw_values": [0.0, 0.0]},
+        "timeouts": {"run_count": 2, "mean": 0.0, "median": 0.0, "min": 0.0, "max": 0.0, "standard_deviation": 0.0, "raw_values": [0.0, 0.0]},
+        "goodput_bps": {"run_count": 2, "mean": 822192.2670699939, "median": 822192.2670699939, "min": 697595.2039951055, "max": 946789.3301448823, "standard_deviation": 176206.8564323632, "raw_values": [946789.3301448823, 697595.2039951055]}
+      }
+    }]
+  },
+  "experiment_families": {
+    "goodput_vs_loss_rate": {"status": "BLOCKED", "reason": "No actual nonzero loss-rate measurements exist; live actual execution rejects impaired channels.", "valid_run_count": 2, "missing_protocols": ["go-back-n", "selective-repeat"]},
+    "goodput_vs_window_size": {"status": "INSUFFICIENT_DATA", "reason": "Actual evidence does not vary window size within an implemented protocol and fixed control settings.", "valid_run_count": 2, "window_parameter_varied_with_controls_fixed": false},
+    "retransmissions_vs_reordering_probability": {"status": "BLOCKED", "reason": "No successful actual records declare that reordering impairment was applied; configured probability alone is not evidence of applied reordering.", "valid_run_count": 0},
+    "rto_sensitivity": {"status": "INSUFFICIENT_DATA", "reason": "Configured RTO does not vary across controlled actual runs, so sensitivity cannot be assessed. Configured RTO is not the same as a measured RTO; timeout-derived samples are only present when timeouts occur.", "valid_run_count": 2, "configured_rto_values_ms": [100.0]}
+  },
+  "raw_actual_run_ids": ["adc6636e-92b8-467d-a98a-44655208a772", "65f428c4-9415-4457-96de-82b41a462974"],
+  "source_files": ["experiments\\results\\actual\\33a58d72-e334-49ac-8a28-1f1b05bdffd6\\adc6636e-92b8-467d-a98a-44655208a772.json", "experiments\\results\\actual\\fc34ed58-12d7-487f-93b7-52768f2f5c1a\\65f428c4-9415-4457-96de-82b41a462974.json"],
+  "actual_source_files": ["experiments\\results\\actual\\33a58d72-e334-49ac-8a28-1f1b05bdffd6\\adc6636e-92b8-467d-a98a-44655208a772.json", "experiments\\results\\actual\\fc34ed58-12d7-487f-93b7-52768f2f5c1a\\65f428c4-9415-4457-96de-82b41a462974.json"]
+}

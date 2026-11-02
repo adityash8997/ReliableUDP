@@ -1,0 +1,25 @@
+{
+  "analysis_file": "analysis.json",
+  "source_result_files": [
+    "experiments\\results\\actual\\33a58d72-e334-49ac-8a28-1f1b05bdffd6\\adc6636e-92b8-467d-a98a-44655208a772.json",
+    "experiments\\results\\actual\\fc34ed58-12d7-487f-93b7-52768f2f5c1a\\65f428c4-9415-4457-96de-82b41a462974.json"
+  ],
+  "analysis_source": "actual_only",
+  "inventory": {
+    "total_records": 2,
+    "actual_records": 2,
+    "successful_actual_runs": 2,
+    "failed_or_incomplete_actual_records": 0,
+    "synthetic_records_excluded": 0,
+    "legacy_unverified_records_excluded": 0,
+    "successful_protocols": ["stop-and-wait"]
+  },
+  "experiment_statuses": {
+    "goodput_vs_loss_rate": "BLOCKED",
+    "goodput_vs_window_size": "INSUFFICIENT_DATA",
+    "retransmissions_vs_reordering_probability": "BLOCKED",
+    "rto_sensitivity": "INSUFFICIENT_DATA"
+  },
+  "graph_directory": "graphs-ea632ddf-5049-4238-a158-3f0e72610e13",
+  "graphs": []
+}

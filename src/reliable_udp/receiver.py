@@ -5,23 +5,29 @@ import argparse
 from pathlib import Path
 
 from .config import ProtocolConfig
+from .metrics import MetricsCollector
 from .reliability import build_protocol
 
 
 class ReceiverApplication:
     """Application-facing receiver entry point."""
 
-    def __init__(self, protocol_config, host="0.0.0.0", port=9000):
+    def __init__(self, protocol_config, host="0.0.0.0", port=9000, metrics_collector: MetricsCollector | None = None):
         self.protocol = build_protocol(
             protocol_config.protocol,
             protocol_config
         )
+        if metrics_collector is not None and hasattr(self.protocol, "metrics_collector"):
+            self.protocol.metrics_collector = metrics_collector
 
         self.protocol.host = host
         self.protocol.port = port
 
-    def receive_file(self, output_path: str) -> dict:
-        return self.protocol.receive_file(output_path)
+    def receive_file(self, output_path: str, *, overwrite: bool = False, **kwargs) -> dict:
+        destination = Path(output_path)
+        if destination.exists() and not overwrite:
+            raise FileExistsError(f"Destination file already exists: {destination}. Pass overwrite=True to replace it.")
+        return self.protocol.receive_file(output_path, destination=str(output_path), overwrite=overwrite, **kwargs)
 
 
 def main() -> None:

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import socket
-import time
 from dataclasses import dataclass
 from typing import Optional
 
@@ -42,9 +41,11 @@ class UDPSender:
         target_host = host or self.config.host
         target_port = port or self.config.port
         self.socket.sendto(packet.serialize(), (target_host, target_port))
+
     def receive_packet(self) -> tuple[Packet, tuple[str, int]]:
         raw_data, addr = self.socket.recvfrom(self.config.buffer_size)
         return Packet.deserialize(raw_data), addr
+
     def close(self) -> None:
         self.socket.close()
 
@@ -57,8 +58,10 @@ class UDPReceiver:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.socket.bind((self.config.host, self.config.port))
         self.socket.settimeout(self.config.timeout_seconds)
+
     def send_packet(self, packet: Packet, address: tuple[str, int]) -> None:
         self.socket.sendto(packet.serialize(), address)
+
     def receive_packet(self, timeout_seconds: Optional[float] = None) -> tuple[Packet, tuple[str, int]]:
         socket_timeout = timeout_seconds if timeout_seconds is not None else self.config.timeout_seconds
         self.socket.settimeout(socket_timeout)

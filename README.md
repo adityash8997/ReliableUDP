@@ -1,91 +1,58 @@
-# Reliable UDP Transfer Project
+# ReliableUDP
 
-This repository is the foundation for a Computer Networks assignment focused on reliable file transfer over UDP.
+ReliableUDP is a Python Computer Networks project for reliable file transfer over UDP. It defines a custom packet/checksum format, UDP socket wrappers, a protocol interface, Stop-and-Wait file transfer with ACK/retransmission handling, and SHA-256 end-to-end file integrity verification.
 
-## Project objective
+## Current implementation
 
-The goal is to implement a custom reliability layer above UDP, compare multiple ARQ protocols, and model the network with a deterministic channel emulator. The current milestone covers the required foundation and infrastructure before the protocol algorithms themselves are implemented.
+- **Actual transfer:** Stop-and-Wait on a clean local UDP path.
+- **Metrics and experiments:** transfer-scoped metrics, bounded actual experiment runs, reproducible generated source files, repetitions and run IDs.
+- **Results:** source-labelled nested JSON and flat CSV under unique `actual/` or `synthetic/` directories.
+- **Analysis and graphs:** provenance-aware actual-result analysis. Graphs are generated only when there are at least two distinct valid parameter settings per protocol.
+- **Not currently available:** actual Go-Back-N/Selective Repeat execution, live channel-emulator impairments, and adaptive RTO. These limitations block several experiment families.
 
-## Language
+See [docs/architecture.md](docs/architecture.md) for the architecture and [docs/experiments.md](docs/experiments.md) for verified commands, metrics, schemas, analysis status, and reproducibility details.
 
-Python 3 is the selected implementation language for this project.
+## Run an actual clean-channel experiment
 
-## Part 1 scope
+From the repository root:
 
-This repository currently contains the network foundation only:
-
-- project scaffolding
-- configuration dataclasses
-- packet definition and checksum validation
-- UDP socket wrappers
-- channel emulator infrastructure
-- metrics foundation
-- tests for core infrastructure
-- documentation
-
-This scope intentionally does not include the final ARQ algorithm implementations. Those remain as student-owned TODOs for later phases.
-
-## Repository layout
-
-```text
-.
-├── README.md
-├── AI-USE.md
-├── .gitignore
-├── pyproject.toml
-├── docs/
-│   ├── architecture.md
-│   ├── packet-format.md
-│   ├── protocol-notes.md
-│   ├── experiments.md
-│   ├── testing-strategy.md
-│   └── viva-notes.md
-├── src/
-│   └── reliable_udp/
-│       ├── __init__.py
-│       ├── checksum.py
-│       ├── config.py
-│       ├── packet.py
-│       ├── metrics.py
-│       ├── udp_transport.py
-│       ├── channel_emulator.py
-│       └── reliability_interface.py
-└── tests/
-    ├── test_packet.py
-    ├── test_udp_transport.py
-    └── test_emulator.py
+```powershell
+$env:PYTHONPATH='src'
+python scripts/run_experiment.py --mode actual --output-dir experiments/results --file-size-bytes 256 --payload-size-bytes 128 --seed 20261105 --repetitions 1 --rto-ms 100 --max-execution-seconds 10
 ```
 
-## Installation
+Actual mode defaults to Stop-and-Wait. It rejects nonzero impairment settings and unsupported protocols instead of substituting synthetic results. See the experiment guide for input-file and synthetic-demo invocations.
 
-```bash
-python -m venv .venv
-source .venv/bin/activate  # Linux/macOS
-# or .venv\Scripts\activate  # Windows
-python -m pip install --upgrade pip
-python -m pip install -e .
+## Analyze results and generate supported graphs
+
+```powershell
+python scripts/analyze_results.py --results-dir experiments/results --output-dir experiments/analysis
+python scripts/plot_results.py --results-dir experiments/results --output-dir experiments/analysis
 ```
 
-## Running tests
+The scripts create unique output directories. Two clean-channel actual runs currently share one configuration, which is not enough to establish a performance trend; the scripts report the missing evidence rather than fabricate graphs. Existing root-level results and plots use legacy schemas and are not assumed to be actual.
 
-```bash
-pytest -q
+## Tests
+
+```powershell
+python -m pytest -q
 ```
 
-## Current academic boundary
+Use the output from the current checkout when reporting test results. The project requires Python 3.10 or later; Matplotlib is declared as the plotting dependency.
 
-The following are intentionally not implemented in this part:
+## Layout
 
-- Stop-and-Wait ARQ
-- Go-Back-N ARQ
-- Selective Repeat ARQ
-- adaptive RTO
-- Jacobson/Karels estimation
-- Karn's algorithm
-- complete retransmission logic
+- `src/reliable_udp/`: transfer, protocol, packet, transport, metrics, and experiment code.
+- `scripts/`: experiment runner, analysis, and plotting entry points.
+- `tests/`: unit, integration, metrics, experiment, analysis, and plotting tests.
+- `experiments/results/`: preserved legacy results and source-separated new runs.
+- `experiments/analysis/`: unique analysis manifests, status reports, and any supported graphs.
+- `docs/`: architecture, packet, protocol, testing, viva, and experiment documentation.
 
-The code includes interface stubs and TODO markers for these features so the later student-owned implementation remains explicit and reviewable.
+## Scope and academic boundary
+
+Go-Back-N and Selective Repeat classes remain protocol stubs. The standalone channel emulator has deterministic impairment tests but is not connected to the live sender/receiver path. Do not present synthetic or legacy-unverified records as actual protocol measurements.
 
 ## AI usage disclosure
 
-This project keeps a transparent AI-use log in [AI-USE.md](AI-USE.md). The assignment allows AI to explain concepts, review code, generate tests, and scaffold support code, but not to silently replace the student's own protocol implementation.
+See [AI-USE.md](AI-USE.md) for the repository's AI-use log.

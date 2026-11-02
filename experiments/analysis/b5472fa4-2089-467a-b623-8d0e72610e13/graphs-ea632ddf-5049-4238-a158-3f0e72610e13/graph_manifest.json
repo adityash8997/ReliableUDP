@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-11-02T02:13:03.152489+00:00",
+  "result_source": "actual",
+  "analysis_source": "actual_only",
+  "graphs": [],
+  "unavailable_families": {
+    "goodput_vs_loss_rate": {"status": "BLOCKED", "reason": "No actual nonzero loss-rate measurements exist; live actual execution rejects impaired channels.", "valid_run_count": 2},
+    "goodput_vs_window_size": {"status": "INSUFFICIENT_DATA", "reason": "Actual evidence does not vary window size within an implemented protocol and fixed control settings.", "valid_run_count": 2},
+    "retransmissions_vs_reordering_probability": {"status": "BLOCKED", "reason": "No successful actual records declare that reordering impairment was applied; configured probability alone is not evidence of applied reordering.", "valid_run_count": 0},
+    "rto_sensitivity": {"status": "INSUFFICIENT_DATA", "reason": "Configured RTO does not vary across controlled actual runs, so sensitivity cannot be assessed. Configured RTO is not the same as a measured RTO; timeout-derived samples are only present when timeouts occur.", "valid_run_count": 2}
+  }
+}

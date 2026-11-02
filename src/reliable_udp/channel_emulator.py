@@ -3,9 +3,9 @@ from __future__ import annotations
 import random
 import time
 from dataclasses import dataclass
-from typing import Iterable, List, Tuple
+from typing import Iterable, List
 
-from .packet import Packet, PacketValidationError
+from .packet import Packet
 
 
 @dataclass
@@ -36,11 +36,7 @@ class ChannelEmulatorConfig:
 
 
 class ChannelEmulator:
-    """Standalone emulator for packet impairments.
-
-    The emulator is deliberately separated from the protocol implementation so
-    it can be tested independently with deterministic random seeds.
-    """
+    """Standalone emulator for packet impairments."""
 
     def __init__(self, config: ChannelEmulatorConfig):
         self.config = config
@@ -51,8 +47,6 @@ class ChannelEmulator:
         if self.random.random() >= self.config.corruption_probability:
             return packet
 
-        # Corrupt one byte in the payload, or if payload is empty, one byte in the
-        # packet header. This maintains the semantics for checksum tests.
         if packet.payload:
             raw = bytearray(packet.payload)
             idx = self.random.randrange(len(raw))
@@ -74,15 +68,8 @@ class ChannelEmulator:
         return delay_ms / 1000.0
 
     def process(self, packet: Packet) -> List[Packet]:
-        """Create the sequence of packets after applying configured impairments.
-
-        The actual semantics intentionally keep a small amount of logic in one place
-        so the emulator can be tested directly and explained during viva.
-        """
         candidates: List[Packet] = [packet]
 
-        # duplication must be considered before loss because duplicated packets are
-        # normal network events, though either could occur in sequence.
         if self.random.random() < self.config.duplication_probability:
             candidates = [packet, Packet(**packet.__dict__)]
 
@@ -104,7 +91,6 @@ class ChannelEmulator:
         return processed
 
     def deliver_in_order(self, packets: Iterable[Packet]) -> List[Packet]:
-        """A simple helper for deterministic per-packet scheduling tests."""
         items = list(packets)
         if self.random.random() < self.config.reordering_probability and len(items) > 1:
             items.reverse()

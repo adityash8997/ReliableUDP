@@ -22,22 +22,7 @@ class PacketValidationError(ValueError):
 
 @dataclass
 class Packet:
-    """Custom wire-format packet for reliable UDP transport.
-
-    Layout (deterministic network byte order):
-
-    0   1   2   3   4   5   6   7   8   9  10  11 12 13 14 15
-    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-    | version | type | flags |  reserved (2 bytes) | seq num (4 bytes) |
-    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-    | ack num (4 bytes) | window (2 bytes) | payload_len (2 bytes) |
-    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-    | checksum (2 bytes) | payload ...                                 |
-    +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
-
-    This layout is intentionally simple enough for every team member to explain
-    during the viva. The actual protocol state machine remains student-owned.
-    """
+    """Custom wire-format packet for reliable UDP transport."""
 
     version: int = 1
     type: PacketType = PacketType.DATA
@@ -49,8 +34,6 @@ class Packet:
     checksum: Optional[int] = None
 
     HEADER_STRUCT = struct.Struct("!BBBBIIHH")
-    # format: version(1), type(1), flags(1), reserved(1), seq_num(4), ack_num(4), window(2), payload_len(2)
-    # total header size is 16 bytes: 1+1+1+1+4+4+2+2 = 16
 
     @property
     def payload_len(self) -> int:
@@ -88,8 +71,6 @@ class Packet:
             payload_length,
         )
 
-        # checksum is computed over the serialized header and payload values of
-        # the packet, excluding the checksum field itself.
         checksum_input = header + payload
         checksum_value = calculate_checksum(checksum_input)
         full_packet = header + struct.pack("!H", checksum_value) + payload

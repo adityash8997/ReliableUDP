@@ -1,46 +1,25 @@
 # Final Requirements Audit
 
-This checklist maps the official P3 requirements to the current repository evidence.
+This status reflects the current code and checked-in evidence, not intended future behavior.
 
-## Core requirements coverage
+| Requirement | Status | Evidence / limitation |
+|---|---|---|
+| Packet serialization and checksum validation | Implemented | `src/reliable_udp/packet.py`, `src/reliable_udp/checksum.py`, and packet tests. |
+| UDP transport wrappers | Implemented | `src/reliable_udp/udp_transport.py`; transport tests cover packet exchange. |
+| Stop-and-Wait transfer and ACK/retry path | Implemented | `src/reliable_udp/reliability.py`; live actual run is clean-channel localhost only. |
+| Go-Back-N transfer | Not implemented | Protocol methods remain stubs; no actual experiment evidence. |
+| Selective Repeat transfer | Not implemented | Protocol methods remain stubs; no actual experiment evidence. |
+| SHA-256 integrity verification | Implemented | File metadata and received digest comparison; integration tests and actual run verify matching hashes. |
+| Transfer-scoped metrics | Implemented, limited observations | Shared collector records packet classes, retransmissions, useful bytes, duration, RTT samples and integrity. Packet loss remains unavailable unless observed through a future live impairment integration. |
+| Actual experiment runner | Implemented for clean Stop-and-Wait | Bounded local transfer, repetitions, unique IDs, actual source label and failure status; unsupported protocols/impairments reject. |
+| Synthetic demonstration mode | Explicitly available | `result_source: synthetic`, `execution_status: demo_only`, separate source folder; excluded from actual analysis. |
+| JSON/CSV result collection | Implemented | Versioned JSON and per-run CSV, unique output names, no silent overwrite. |
+| Goodput vs loss-rate evaluation | Blocked | No actual nonzero loss runs; GBN/SR unavailable. Legacy records are unverified, not actual. |
+| Goodput vs window-size evaluation | Insufficient data | Two actual Stop-and-Wait runs share window 1; no supported window sweep. |
+| Retransmissions vs reordering evaluation | Blocked | The channel emulator is not on the live UDP path; no actual reordering evidence. |
+| RTO sensitivity evaluation | Insufficient data | Only one configured RTO value in current actual evidence; no sensitivity curve. |
+| Actual-data performance graphs | No graph currently justified | Two repeats at one clean configuration cannot support parameter trends. Existing PNGs are legacy/demo and are not represented as actual graphs. |
+| Analysis and provenance validation | Implemented | Reusable script excludes synthetic, failed/incomplete, and legacy-unverified records from actual aggregates and reports family status. |
+| Regression tests | Current command result required | Report only the output of the final-sprint test command in the active checkout. |
 
-- UDP file transfer works: supported by UDP transport layer and packet format foundation in [src/reliable_udp/udp_transport.py](src/reliable_udp/udp_transport.py) and [src/reliable_udp/packet.py](src/reliable_udp/packet.py)
-- Stop-and-Wait works: protocol skeleton exists in [src/reliable_udp/reliability.py](src/reliable_udp/reliability.py); actual student-owned implementation remains pending
-- Go-Back-N works: protocol skeleton exists in [src/reliable_udp/reliability.py](src/reliable_udp/reliability.py); actual student-owned implementation remains pending
-- Selective Repeat works: protocol skeleton exists in [src/reliable_udp/reliability.py](src/reliable_udp/reliability.py); actual student-owned implementation remains pending
-- Protocols are pluggable: supported by the common interface in [src/reliable_udp/reliability_interface.py](src/reliable_udp/reliability_interface.py)
-- Sequence numbers implemented: packet fields defined in [src/reliable_udp/packet.py](src/reliable_udp/packet.py)
-- Checksums implemented: checksum logic in [src/reliable_udp/checksum.py](src/reliable_udp/checksum.py)
-- ACK mechanisms implemented: packet type definitions and protocol scaffolding in [src/reliable_udp/packet.py](src/reliable_udp/packet.py)
-- Retransmission timers implemented: part of future protocol logic, documented as TODO
-- Adaptive RTO implemented: documented as future student-owned work
-- Jacobson/Karels implemented: documented as future student-owned work
-- Karn's algorithm implemented: documented as future student-owned work
-- Channel emulator supports loss: [src/reliable_udp/channel_emulator.py](src/reliable_udp/channel_emulator.py)
-- Channel emulator supports duplication: [src/reliable_udp/channel_emulator.py](src/reliable_udp/channel_emulator.py)
-- Channel emulator supports corruption: [src/reliable_udp/channel_emulator.py](src/reliable_udp/channel_emulator.py)
-- Channel emulator supports reordering: [src/reliable_udp/channel_emulator.py](src/reliable_udp/channel_emulator.py)
-- Channel emulator supports delay: [src/reliable_udp/channel_emulator.py](src/reliable_udp/channel_emulator.py)
-- Channel emulator supports jitter: [src/reliable_udp/channel_emulator.py](src/reliable_udp/channel_emulator.py)
-- Deterministic seeds work: tested in [tests/test_emulator.py](tests/test_emulator.py)
-- File hash verification works: foundation in [src/reliable_udp/file_transfer.py](src/reliable_udp/file_transfer.py)
-- Metrics collection works: foundation in [src/reliable_udp/metrics.py](src/reliable_udp/metrics.py)
-- Goodput calculated: experiment/result framework in [src/reliable_udp/experiment.py](src/reliable_udp/experiment.py)
-- Loss-rate experiment completed: automated in [scripts/run_experiment.py](scripts/run_experiment.py)
-- Window-size experiment completed: automated in [scripts/run_experiment.py](scripts/run_experiment.py)
-- Reordering experiment completed: planned in experiment framework, not yet protocol-level executed
-- RTO sensitivity experiment completed: planned in experiment framework, not yet protocol-level executed
-- Graphs generated from actual data: [experiments/plots](experiments/plots)
-- Results reproducible: run scripts under [scripts](scripts)
-- Unit tests pass: verified with pytest
-- Integration tests pass: UDP and emulator tests pass
-- README complete: [README.md](README.md)
-- Architecture documentation complete: [docs/architecture.md](docs/architecture.md)
-- Packet format documented: [docs/packet-format.md](docs/packet-format.md)
-- AI-USE.md maintained: [AI-USE.md](AI-USE.md)
-- Git history shows genuine contribution: repository is in active development on the provided branch
-- Every team member can explain the system: documented in [docs/viva-notes.md](docs/viva-notes.md)
-
-## Academic boundary note
-
-The current repository includes the infrastructure and experimental support required by the assignment, while intentionally leaving the core ARQ algorithms and adaptive RTO logic as student-owned implementation tasks. This matches the assignment's AI-use restriction.
+The legacy flat result files and old plots are preserved. Missing provenance is not repaired by assumption. For architecture, commands, formulas, schema, analysis statuses and limitations, see [experiments.md](experiments.md).

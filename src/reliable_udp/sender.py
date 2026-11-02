@@ -5,6 +5,7 @@ from pathlib import Path
 
 from .config import ChannelConfig, ProtocolConfig, TransferConfig
 from .file_transfer import FileTransferService
+from .metrics import MetricsCollector
 from .reliability import build_protocol
 
 
@@ -15,16 +16,21 @@ class SenderApplication:
     handled by the protocol-specific implementations that students complete.
     """
 
-    def __init__(self, config: TransferConfig):
+    def __init__(self, config: TransferConfig, metrics_collector: MetricsCollector | None = None):
         self.config = config
         self.protocol = build_protocol(config.protocol.protocol, config.protocol)
+        if metrics_collector is not None and hasattr(self.protocol, "metrics_collector"):
+            self.protocol.metrics_collector = metrics_collector
         self.protocol.host = config.host
         self.protocol.port = config.port
         self.transfer = FileTransferService(self.protocol)
 
-    def send_file(self, file_path: str, output_path: str | None = None) -> dict:
+    def send_file(self, file_path: str, output_path: str | None = None, *, overwrite: bool = False, **kwargs) -> dict:
         output = output_path or self.config.output_path or str(Path(file_path).with_name(Path(file_path).name + ".received"))
-        return self.transfer.send_file(file_path, output)
+        destination = Path(output)
+        if destination.exists() and not overwrite:
+            raise FileExistsError(f"Destination file already exists: {destination}. Pass overwrite=True to replace it.")
+        return self.transfer.send_file(file_path, output, overwrite=overwrite, **kwargs)
 
 
 def main() -> None:

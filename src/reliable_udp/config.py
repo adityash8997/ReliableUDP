@@ -6,12 +6,7 @@ from typing import Optional
 
 @dataclass
 class ProtocolConfig:
-    """Configuration for the selected reliability protocol.
-
-    This is intentionally generic enough to support Stop-and-Wait,
-    Go-Back-N, and Selective Repeat, while leaving the actual core
-    algorithm as student-owned implementation work.
-    """
+    """Configuration for the selected reliability protocol."""
 
     protocol: str = "stop-and-wait"
     window_size: int = 1
